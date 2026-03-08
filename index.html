@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>相性診断 - 星座×血液型×MBTI×恋愛タイプ</title>
+
+    <style>
+        body {
+            font-family: "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif;
+            background: linear-gradient(to bottom, #f9f9ff, #e6f0ff);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin: 30px 0 10px;
+        }
+
+        h2 {
+            color: #34495e;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 8px;
+            margin-top: 40px;
+        }
+
+        form {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin: 20px auto;
+        }
+
+        label {
+            display: block;
+            margin: 20px 0 8px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        select, button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 25px;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #ecf0f1;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .stars {
+            font-size: 24px;
+            color: #f39c12;
+            letter-spacing: 2px;
+        }
+
+        .percent {
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        .rank {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+
+        .no-result {
+            text-align: center;
+            color: #7f8c8d;
+            margin: 40px 0;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 600px) {
+            form { padding: 20px; }
+            table, th, td { font-size: 14px; padding: 10px; }
+        }
+        .toggle-content {
+            display: none;
+        }
+        .toggle-button {
+            background: #3498db;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .toggle-button:hover {
+            background: #2980b9;
+        }
+        .full-list-table {
+            max-height: 400px;  /* 少し高めに調整 */
+            overflow-y: auto;
+            margin-bottom: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>相性診断</h1>
+    <p style="text-align:center; color:#7f8c8d;">星座 × 血液型 × MBTI × 恋愛タイプ16 の総合相性をチェック！</p>
+
+  <form method="POST" action="{{ url_for('home') }}">
+
+    <label>あなたの星座</label>
+    <select name="my_zodiac" required>
+        {% for z in ['牡羊座','牡牛座','双子座','蟹座','獅子座','乙女座','天秤座','蠍座','射手座','山羊座','水瓶座','魚座'] %}
+            <option value="{{ z }}" {% if my_type and my_type[0] == z %}selected{% endif %}>{{ z }}</option>
+        {% endfor %}
+    </select>
+
+    <label>あなたの血液型</label>
+    <select name="my_blood" required>
+        {% for b in ['A','B','O','AB'] %}
+            <option value="{{ b }}" {% if my_type and my_type[1] == b %}selected{% endif %}>{{ b }}型</option>
+        {% endfor %}
+    </select>
+
+    <label>あなたのMBTI</label>
+    <select name="my_mbti" required>
+        {% for m in ['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP','ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'] %}
+            <option value="{{ m }}" {% if my_type and my_type[2] == m %}selected{% endif %}>{{ m }}</option>
+        {% endfor %}
+    </select>
+
+    <label>あなたの恋愛タイプ</label>
+    <select name="my_love" required>
+        {% for l in ['ボス猫','隠れベイビー','主役体質','ツンデレヤンキー','憧れの先輩','カリスマバランサー','パーフェクトカメレオン','キャプテンライオン','ロマンスマジシャン','ちゃっかりうさぎ','恋愛モンスター','忠犬ハチ公','不思議生命体','敏腕マネージャー','デビル天使','最後の恋人'] %}
+            <option value="{{ l }}" {% if my_type and my_type[3] == l %}selected{% endif %}>{{ l }}</option>
+        {% endfor %}
+    </select>
+
+    <!-- ここにsubmitボタンを1つだけ置く -->
+    <button type="submit">診断する</button>
+
+</form>
+
+
+    {% if best5 %}
+        <h2>あなたに最高に合う相手 BEST 5</h2>
+        <table>
+            <tr>
+                <th>順位</th>
+                <th>星座</th>
+                <th>血液型</th>
+                <th>MBTI</th>
+                <th>恋愛タイプ</th>
+                <th>相性度</th>
+                <th>スコア</th>
+            </tr>
+            {% for item in best5 %}
+            <tr>
+                <td class="rank">{{ loop.index }}位</td>
+                <td>{{ item.zodiac }}</td>
+                <td>{{ item.blood }}型</td>
+                <td>{{ item.mbti }}</td>
+                <td>{{ item.love }}</td>
+                <td class="percent">{{ item.percent }}%</td>
+                <td class="stars">
+                    {% if item.stars == 5.0 %}★★★★★{% elif item.stars == 4.5 %}★★★★☆{% elif item.stars == 4.0 %}★★★★{% elif item.stars == 3.5 %}★★★☆{% elif item.stars == 3.0 %}★★★{% elif item.stars == 2.5 %}★★☆{% elif item.stars == 2.0 %}★★{% elif item.stars == 1.5 %}★☆{% elif item.stars == 1.0 %}★{% else %}ー{% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <!-- BEST5 の下に高い順全一覧ボタン -->
+        <button class="toggle-button" onclick="toggleContent('best-full')">高い順 全組み合わせ一覧 を開く</button>
+        <div id="best-full" class="toggle-content full-list-table">
+            <table>
+                <tr>
+                    <th>順位</th>
+                    <th>星座</th>
+                    <th>血液型</th>
+                    <th>MBTI</th>
+                    <th>恋愛タイプ</th>
+                    <th>相性度</th>
+                    <th>スコア</th>
+                </tr>
+                {% for item in all_best %}
+                <tr>
+                    <td class="rank">{{ loop.index }}位</td>
+                    <td>{{ item.zodiac }}</td>
+                    <td>{{ item.blood }}型</td>
+                    <td>{{ item.mbti }}</td>
+                    <td>{{ item.love }}</td>
+                    <td class="percent">{{ item.percent }}%</td>
+                    <td class="stars">
+                        {% if item.stars == 5.0 %}★★★★★{% elif item.stars == 4.5 %}★★★★☆{% elif item.stars == 4.0 %}★★★★{% elif item.stars == 3.5 %}★★★☆{% elif item.stars == 3.0 %}★★★{% elif item.stars == 2.5 %}★★☆{% elif item.stars == 2.0 %}★★{% elif item.stars == 1.5 %}★☆{% elif item.stars == 1.0 %}★{% else %}ー{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+
+    {% if worst5 %}
+        <h2>相性が難しいかも… WORST 5</h2>
+        <table>
+            <tr>
+                <th>順位</th>
+                <th>星座</th>
+                <th>血液型</th>
+                <th>MBTI</th>
+                <th>恋愛タイプ</th>
+                <th>相性度</th>
+                <th>スコア</th>
+            </tr>
+            {% for item in worst5 %}
+            <tr>
+                <td class="rank">{{ loop.index }}位</td>
+                <td>{{ item.zodiac }}</td>
+                <td>{{ item.blood }}型</td>
+                <td>{{ item.mbti }}</td>
+                <td>{{ item.love }}</td>
+                <td class="percent">{{ item.percent }}%</td>
+                <td class="stars">
+                    {% if item.stars == 5.0 %}★★★★★{% elif item.stars == 4.5 %}★★★★☆{% elif item.stars == 4.0 %}★★★★{% elif item.stars == 3.5 %}★★★☆{% elif item.stars == 3.0 %}★★★{% elif item.stars == 2.5 %}★★☆{% elif item.stars == 2.0 %}★★{% elif item.stars == 1.5 %}★☆{% elif item.stars == 1.0 %}★{% else %}ー{% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <!-- WORST5 の下に低い順全一覧ボタン -->
+        <button class="toggle-button" onclick="toggleContent('worst-full')">低い順 全組み合わせ一覧 を開く</button>
+        <div id="worst-full" class="toggle-content full-list-table">
+            <table>
+                <tr>
+                    <th>順位</th>
+                    <th>星座</th>
+                    <th>血液型</th>
+                    <th>MBTI</th>
+                    <th>恋愛タイプ</th>
+                    <th>相性度</th>
+                    <th>スコア</th>
+                </tr>
+                {% for item in all_worst %}
+                <tr>
+                    <td class="rank">{{ loop.index }}位</td>
+                    <td>{{ item.zodiac }}</td>
+                    <td>{{ item.blood }}型</td>
+                    <td>{{ item.mbti }}</td>
+                    <td>{{ item.love }}</td>
+                    <td class="percent">{{ item.percent }}%</td>
+                    <td class="stars">
+                        {% if item.stars == 5.0 %}★★★★★{% elif item.stars == 4.5 %}★★★★☆{% elif item.stars == 4.0 %}★★★★{% elif item.stars == 3.5 %}★★★☆{% elif item.stars == 3.0 %}★★★{% elif item.stars == 2.5 %}★★☆{% elif item.stars == 2.0 %}★★{% elif item.stars == 1.5 %}★☆{% elif item.stars == 1.0 %}★{% else %}ー{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+
+    {% if not best5 and not worst5 %}
+        <div class="no-result">
+            あなたのタイプを選んで「診断する」を押してください！<br>
+            12,288通りの組み合わせからベスト＆ワーストを瞬時に診断します♪
+        </div>
+    {% endif %}
+
+</div>
+
+<script>
+    function toggleContent(id) {
+        var content = document.getElementById(id);
+        if (content) {
+            if (content.style.display === "block") {
+                content.style.display = "none";
+            } else {
+                content.style.display = "block";
+            }
+        } else {
+            console.log("IDが見つかりません: " + id);
+        }
+    }
+</script>
+
+</body>
+</html>
