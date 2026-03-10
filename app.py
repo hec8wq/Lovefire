@@ -13,8 +13,21 @@ zodiac_elements = {
 }
 zodiacs = list(zodiac_elements.keys())
 blood_types = ['A', 'B', 'O', 'AB']
-mbtis = ['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP',
-         'ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP']
+mbtis = [
+    # NT（分析・戦略タイプ）
+    'INTJ','INTP','ENTJ','ENTP',
+
+    # NF（共感・理想タイプ）
+    'INFJ','INFP','ENFJ','ENFP',
+
+    # SJ（安定・実務タイプ）
+    'ISTJ','ISFJ','ESTJ','ESFJ',
+
+    # SP（行動・柔軟タイプ）
+    'ISTP','ISFP','ESTP','ESFP'
+]
+
+
 love_types = [
     'ボス猫','隠れベイビー','主役体質','ツンデレヤンキー',
     '憧れの先輩','カリスマバランサー','パーフェクトカメレオン','キャプテンライオン',
