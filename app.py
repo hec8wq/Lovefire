@@ -420,16 +420,22 @@ def total_compatibility(my_type, partner_type):
     # raw 合計
     raw = z_score + b_score + m_score + l_score
 
-    # ★ 正規化（ここに書きます）
-    MIN_TOTAL = 235
-    MAX_TOTAL = 381
+    # ★ 正規化（ここを書き換え）
+    THEORETICAL_MIN = 235   # 理論上の最低（各スコアの最悪値合計）
+    PRACTICAL_MIN = 210     # 実際の最低保証値（rawがこれ以下でも強制的にこの値にする）
+    MAX_TOTAL = 381         # 最大値（変更なし）
 
-    percent = (raw - MIN_TOTAL) / (MAX_TOTAL - MIN_TOTAL) * 99.9
-    percent = max(0.0, min(99.9, percent))
+    # rawを現実的な範囲にクリップ（最低210保証）
+    raw_clipped = max(PRACTICAL_MIN, raw)
+
+    # percent計算：下限を210にして、低スコアでも0.4%〜数%が出るように
+    percent = (raw_clipped - PRACTICAL_MIN) / (MAX_TOTAL - PRACTICAL_MIN) * 100
+    percent = max(0.4, percent)          # ← 最低0.4%を強制（ここを0.8に変えてもOK）
+    percent = min(100.0, percent)        # 上限100%
     percent = round(percent, 1)
 
-    # 星の計算
-    stars = get_stars(raw)
+    # 星の計算（rawはクリップ前/後どちらでもOKだが、表示用に元のrawを使うのが自然）
+    stars = get_stars(raw)               # または get_stars(raw_clipped) でも可
 
     return stars, raw, percent
 
@@ -441,110 +447,82 @@ def total_compatibility(my_type, partner_type):
 def home():
     best5 = []
     worst5 = []
-    all_best = []   # 全組み合わせ（降順）
-    all_worst = []  # 全組み合わせ（昇順）
-    my_type = None
+    all_best = []
+    all_worst = []
+    search_result = None
 
-    if request.method == 'POST':
+    # ▼ 追加：サイトを新しく開いた時（GETリクエスト時）は履歴をリセットして初期画面にする
+    if request.method == 'GET':
+        session.clear()
+        my_type = None
+    else:
+        my_type = session.get('my_type')
+
+    action = request.form.get('action') if request.method == 'POST' else None
+
+    if action == 'diagnose':
+        # --- 自分の情報をセッションに保存 ---
         my_z = request.form.get('my_zodiac')
         my_b = request.form.get('my_blood')
         my_m = request.form.get('my_mbti')
         my_l = request.form.get('my_love')
-
         if all([my_z, my_b, my_m, my_l]):
             my_type = (my_z, my_b, my_m, my_l)
             session['my_type'] = my_type
 
-            candidates = []
+    # 自分の情報があれば、ランキングを計算
+    if my_type:
+        candidates = []
+        for z in zodiacs:
+            for b in blood_types:
+                for m in mbtis:
+                    for l in love_types:
+                        partner = (z, b, m, l)
+                        if partner == my_type:
+                            continue # 自分と全く同じ組み合わせはランキングから除外
 
-            for z in zodiacs:
-                for b in blood_types:
-                    for m in mbtis:
-                        for l in love_types:
-                            partner = (z, b, m, l)
-                            if partner == my_type:
-                                continue
+                        stars, raw, percent = total_compatibility(my_type, partner)
+                        candidates.append({
+                            'zodiac': z, 'blood': b, 'mbti': m, 'love': l,
+                            'stars': stars, 'raw': raw, 'percent': percent
+                        })
 
-                            stars, raw, percent = total_compatibility(my_type, partner)
+        candidates_desc = sorted(candidates, key=lambda x: (x['stars'], x['raw'], x['percent']), reverse=True)
+        candidates_asc = sorted(candidates, key=lambda x: (x['stars'], x['raw'], x['percent']), reverse=False)
 
-                            candidates.append({
-                                'zodiac': z,
-                                'blood': b,
-                                'mbti': m,
-                                'love': l,
-                                'stars': stars,
-                                'raw': raw,
-                                'percent': percent
-                            })
+        best5 = candidates_desc[:5]
+        worst5 = candidates_asc[:5]
+        all_best = candidates_desc
+        all_worst = candidates_asc
 
-            # 降順ソート（高い順）
-            candidates_sorted_desc = sorted(
-                candidates,
-                key=lambda x: (x['stars'], x['raw'], x['percent']),
-                reverse=True
-            )
+        # --- 「この相手の順位を見る」が押された時の処理 ---
+        if action == 'search_rank':
+            p_z = request.form.get('p_zodiac')
+            p_b = request.form.get('p_blood')
+            p_m = request.form.get('p_mbti')
+            p_l = request.form.get('p_love')
+            partner_type = (p_z, p_b, p_m, p_l)
 
-            # 昇順ソート（低い順）
-            candidates_sorted_asc = sorted(
-                candidates,
-                key=lambda x: (x['stars'], x['raw'], x['percent']),
-                reverse=False
-            )
-
-            best5 = candidates_sorted_desc[:5]
-            worst5 = candidates_sorted_asc[:5]  # 低い順のトップ5がワースト5
-
-            all_best = candidates_sorted_desc  # 全リスト（高い順）
-            all_worst = candidates_sorted_asc  # 全リスト（低い順）
-
-            session['candidates'] = candidates_sorted_desc
-
-    elif 'my_type' in session:
-        my_type = session['my_type']
+            if my_type == partner_type:
+                search_result = {"error": "自分と全く同じ組み合わせです（診断対象外です）"}
+            else:
+                for idx, item in enumerate(candidates_desc, start=1):
+                    if (item['zodiac'] == p_z and item['blood'] == p_b and
+                        item['mbti'] == p_m and item['love'] == p_l):
+                        search_result = {
+                            'rank': idx,
+                            'total_count': len(candidates_desc),
+                            'zodiac': p_z, 'blood': p_b, 'mbti': p_m, 'love': p_l,
+                            'percent': item['percent'], 'stars': item['stars']
+                        }
+                        break
 
     return render_template(
         'index.html',
-        best5=best5,
-        worst5=worst5,
-        all_best=all_best,     # BESTの下に表示する全リスト（降順）
-        all_worst=all_worst,   # WORSTの下に表示する全リスト（昇順）
-        my_type=my_type
+        best5=best5, worst5=worst5,
+        all_best=all_best, all_worst=all_worst,
+        my_type=my_type, search_result=search_result
     )
-
-@app.route('/rank-check', methods=['GET', 'POST'])
-def rank_check():
-    candidates = session.get('candidates')
-    my_type = session.get('my_type')
-
-    if not candidates or not my_type:
-        return "先に診断を行ってください。"
-
-    if request.method == 'POST':
-        p_z = request.form.get('p_zodiac')
-        p_b = request.form.get('p_blood')
-        p_m = request.form.get('p_mbti')
-        p_l = request.form.get('p_love')
-
-        if not all([p_z, p_b, p_m, p_l]):
-            return "相手の情報をすべて入力してください。"
-
-        target = {
-            'zodiac': p_z,
-            'blood': p_b,
-            'mbti': p_m,
-            'love': p_l
-        }
-
-        for idx, item in enumerate(candidates, start=1):
-            if (item['zodiac'] == target['zodiac'] and
-                item['blood'] == target['blood'] and
-                item['mbti'] == target['mbti'] and
-                item['love'] == target['love']):
-                return f"この相手はあなたとの相性ランキングで {idx} 位です。"
-
-        return "該当する相手が見つかりませんでした。"
-
-    return render_template('rank_check.html')
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
