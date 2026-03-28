@@ -32,7 +32,7 @@
         }
 
         .header-logo img {
-            max-width: 200px;
+            max-width: 180px; /* 統一サイズ */
             height: auto;
             opacity: 0.85;
             transition: opacity 0.3s;
@@ -141,143 +141,46 @@
             font-size: 1rem;
         }
 
-        td:first-child {
-            border-radius: 15px 0 0 15px;
-        }
+        td:first-child { border-radius: 15px 0 0 15px; }
+        td:last-child { border-radius: 0 15px 15px 0; }
 
-        td:last-child {
-            border-radius: 0 15px 15px 0;
-        }
-
-        .rank {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--main-pink);
-        }
-
-        .percent {
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #55CC88;
-        }
+        .rank { font-size: 1.2rem; font-weight: 700; color: var(--main-pink); }
+        .percent { font-size: 1.1rem; font-weight: 700; color: #55CC88; }
 
         @media (max-width: 600px) {
-            .header-logo {
-                position: static;
-                text-align: center;
-                margin-bottom: 20px;
-            }
-
-            .header-logo img {
-                max-width: 140px;
-            }
-
-            .container {
-                margin-top: 20px;
-                padding: 10px;
-            }
-
-            form {
-                padding: 25px;
-            }
-
-            h1 {
-                font-size: 1.8rem;
-            }
-
-            /* スマホ用テーブル解除（カード形式） */
-            #result-area table,
-            #result-area thead,
-            #result-area tbody,
-            #result-area th,
-            #result-area td,
-            #result-area tr {
-                display: block;
-            }
-
-            #result-area table tr:first-child,
-            #result-area thead {
-                display: none;
-            }
-
+            .header-logo { position: static; text-align: center; margin-bottom: 20px; }
+            .header-logo img { max-width: 140px; }
+            .container { margin-top: 20px; padding: 10px; }
+            form { padding: 25px; }
+            h1 { font-size: 1.8rem; }
+            
+            #result-area table, #result-area thead, #result-area tbody, #result-area th, #result-area td, #result-area tr { display: block; }
+            #result-area table tr:first-child, #result-area thead { display: none; }
             #result-area table tr {
-                background: #FFFFFF;
-                border-radius: 20px;
-                margin-bottom: 20px;
-                padding: 20px;
-                box-shadow: 0 5px 15px rgba(232, 111, 164, 0.05);
-                position: relative;
+                background: #FFFFFF; border-radius: 20px; margin-bottom: 20px; padding: 20px;
+                box-shadow: 0 5px 15px rgba(232, 111, 164, 0.05); position: relative;
             }
-
-            #result-area table td {
-                border: none;
-                padding: 10px 0 10px 45%;
-                position: relative;
-                text-align: left;
-                font-size: 1rem;
-            }
-
-            #result-area table td:first-child,
-            #result-area table td:last-child {
-                border-radius: 0;
-            }
-
+            #result-area table td { border: none; padding: 10px 0 10px 45%; position: relative; text-align: left; font-size: 1rem; }
+            #result-area table td:first-child, #result-area table td:last-child { border-radius: 0; }
             #result-area table td::before {
-                position: absolute;
-                top: 10px;
-                left: 0;
-                width: 40%;
-                padding-right: 15px;
-                white-space: nowrap;
-                color: #99888D;
-                font-weight: bold;
-                text-align: right;
+                position: absolute; top: 10px; left: 0; width: 40%; padding-right: 15px;
+                white-space: nowrap; color: #99888D; font-weight: bold; text-align: right;
             }
-
-            #result-area table td:nth-of-type(1)::before {
-                content: "順位";
-            }
-
-            #result-area table td:nth-of-type(2)::before {
-                content: "星座";
-            }
-
-            #result-area table td:nth-of-type(3)::before {
-                content: "血液型";
-            }
-
-            #result-area table td:nth-of-type(4)::before {
-                content: "MBTI";
-            }
-
-            #result-area table td:nth-of-type(5)::before {
-                content: "恋愛タイプ";
-            }
-
-            #result-area table td:nth-of-type(6)::before {
-                content: "相性度";
-            }
-
-            #result-area table td:nth-of-type(7)::before {
-                content: "スコア";
-            }
+            #result-area table td:nth-of-type(1)::before { content: "順位"; }
+            #result-area table td:nth-of-type(2)::before { content: "星座"; }
+            #result-area table td:nth-of-type(3)::before { content: "血液型"; }
+            #result-area table td:nth-of-type(4)::before { content: "MBTI"; }
+            #result-area table td:nth-of-type(5)::before { content: "恋愛タイプ"; }
+            #result-area table td:nth-of-type(6)::before { content: "相性度"; }
+            #result-area table td:nth-of-type(7)::before { content: "スコア"; }
         }
 
-        .toggle-content {
-            display: none;
-        }
-
+        .toggle-content { display: none; }
         .full-list-table {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-bottom: 40px;
-            border-radius: 15px;
-            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+            max-height: 400px; overflow-y: auto; margin-bottom: 40px;
+            border-radius: 15px; box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
         }
-
-        html {
-            visibility: hidden;
-        }
+        html { visibility: hidden; }
     </style>
 
     <script>
@@ -322,18 +225,14 @@
 
             <label>あなたのMBTI</label>
             <select name="my_mbti" required>
-                {% for m in
-                ['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP','ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP']
-                %}
+                {% for m in ['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP','ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'] %}
                 <option value="{{ m }}" {% if my_type and my_type[2]==m %}selected{% endif %}>{{ m }}</option>
                 {% endfor %}
             </select>
 
             <label>あなたの恋愛タイプ</label>
             <select name="my_love" required>
-                {% for l in
-                ['ボス猫','隠れベイビー','主役体質','ツンデレヤンキー','憧れの先輩','カリスマバランサー','パーフェクトカメレオン','キャプテンライオン','ロマンスマジシャン','ちゃっかりうさぎ','恋愛モンスター','忠犬ハチ公','不思議生命体','敏腕マネージャー','デビル天使','最後の恋人']
-                %}
+                {% for l in ['ボス猫','隠れベイビー','主役体質','ツンデレヤンキー','憧れの先輩','カリスマバランサー','パーフェクトカメレオン','キャプテンライオン','ロマンスマジシャン','ちゃっかりうさぎ','恋愛モンスター','忠犬ハチ公','不思議生命体','敏腕マネージャー','デビル天使','最後の恋人'] %}
                 <option value="{{ l }}" {% if my_type and my_type[3]==l %}selected{% endif %}>{{ l }}</option>
                 {% endfor %}
             </select>
@@ -345,13 +244,7 @@
             <h2>あなたに最高に合う相手 BEST 5</h2>
             <table>
                 <tr>
-                    <th>順位</th>
-                    <th>星座</th>
-                    <th>血液型</th>
-                    <th>MBTI</th>
-                    <th>恋愛タイプ</th>
-                    <th>相性度</th>
-                    <th>スコア</th>
+                    <th>順位</th><th>星座</th><th>血液型</th><th>MBTI</th><th>恋愛タイプ</th><th>相性度</th><th>スコア</th>
                 </tr>
                 {% for item in best5 %}
                 <tr>
@@ -362,10 +255,7 @@
                     <td>{{ item.love }}</td>
                     <td class="percent">{{ item.percent }}%</td>
                     <td class="stars">
-                        {% if item.stars == 5.0 %}★★★★★{% elif item.stars == 4.5 %}★★★★☆{% elif item.stars == 4.0
-                        %}★★★★{% elif item.stars == 3.5 %}★★★☆{% elif item.stars == 3.0 %}★★★{% elif item.stars == 2.5
-                        %}★★☆{% elif item.stars == 2.0 %}★★{% elif item.stars == 1.5 %}★☆{% elif item.stars == 1.0 %}★{%
-                        else %}ー{% endif %}
+                        {% if item.stars == 5.0 %}★★★★★{% elif item.stars == 4.5 %}★★★★☆{% elif item.stars == 4.0 %}★★★★{% elif item.stars == 3.5 %}★★★☆{% elif item.stars == 3.0 %}★★★{% elif item.stars == 2.5 %}★★☆{% elif item.stars == 2.0 %}★★{% elif item.stars == 1.5 %}★☆{% elif item.stars == 1.0 %}★{% else %}ー{% endif %}
                     </td>
                 </tr>
                 {% endfor %}
@@ -373,15 +263,7 @@
             <button class="toggle-button" onclick="toggleContent('best-full')">高い順 全組み合わせ一覧 を開く</button>
             <div id="best-full" class="toggle-content full-list-table">
                 <table>
-                    <tr>
-                        <th>順位</th>
-                        <th>星座</th>
-                        <th>血液型</th>
-                        <th>MBTI</th>
-                        <th>恋愛タイプ</th>
-                        <th>相性度</th>
-                        <th>スコア</th>
-                    </tr>
+                    <tr><th>順位</th><th>星座</th><th>血液型</th><th>MBTI</th><th>恋愛タイプ</th><th>相性度</th><th>スコア</th></tr>
                     {% for item in all_best %}
                     <tr>
                         <td class="rank">{{ loop.index }}位</td>
@@ -390,7 +272,9 @@
                         <td>{{ item.mbti }}</td>
                         <td>{{ item.love }}</td>
                         <td class="percent">{{ item.percent }}%</td>
-                        <td class="stars">{% if item.stars == 5.0 %}★★★★★{% else %}...{% endif %}</td>
+                        <td class="stars">
+                            {% if item.stars == 5.0 %}★★★★★{% elif item.stars == 4.5 %}★★★★☆{% elif item.stars == 4.0 %}★★★★{% elif item.stars == 3.5 %}★★★☆{% elif item.stars == 3.0 %}★★★{% elif item.stars == 2.5 %}★★☆{% elif item.stars == 2.0 %}★★{% elif item.stars == 1.5 %}★☆{% elif item.stars == 1.0 %}★{% else %}ー{% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </table>
@@ -401,13 +285,7 @@
             <h2>相性が難しいかも… WORST 5</h2>
             <table>
                 <tr>
-                    <th>順位</th>
-                    <th>星座</th>
-                    <th>血液型</th>
-                    <th>MBTI</th>
-                    <th>恋愛タイプ</th>
-                    <th>相性度</th>
-                    <th>スコア</th>
+                    <th>順位</th><th>星座</th><th>血液型</th><th>MBTI</th><th>恋愛タイプ</th><th>相性度</th><th>スコア</th>
                 </tr>
                 {% for item in worst5 %}
                 <tr>
@@ -417,7 +295,9 @@
                     <td>{{ item.mbti }}</td>
                     <td>{{ item.love }}</td>
                     <td class="percent">{{ item.percent }}%</td>
-                    <td class="stars">{% if item.stars == 5.0 %}★★★★★{% else %}...{% endif %}</td>
+                    <td class="stars">
+                        {% if item.stars == 5.0 %}★★★★★{% elif item.stars == 4.5 %}★★★★☆{% elif item.stars == 4.0 %}★★★★{% elif item.stars == 3.5 %}★★★☆{% elif item.stars == 3.0 %}★★★{% elif item.stars == 2.5 %}★★☆{% elif item.stars == 2.0 %}★★{% elif item.stars == 1.5 %}★☆{% elif item.stars == 1.0 %}★{% else %}ー{% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </table>
@@ -426,11 +306,48 @@
 
         {% if best5 or worst5 %}
         <div id="search-area" class="search-result-box">
-            <h2>特定の相手との相性順位を調べる</h2>
+            <h2 style="margin-top: 0; color: #34495e; border-bottom: 2px solid #FF99EE; padding-bottom: 8px;">特定の相手との相性順位を調べる</h2>
             <form method="POST" action="/diagnose">
+                <label>相手の星座</label>
+                <select name="p_zodiac" required>
+                    {% for z in ['牡羊座','牡牛座','双子座','蟹座','獅子座','乙女座','天秤座','蠍座','射手座','山羊座','水瓶座','魚座'] %}
+                    <option value="{{ z }}" {% if p_type and p_type[0]==z %}selected{% endif %}>{{ z }}</option>
+                    {% endfor %}
+                </select>
+
+                <label>相手の血液型</label>
+                <select name="p_blood" required>
+                    {% for b in ['A','B','O','AB'] %}
+                    <option value="{{ b }}" {% if p_type and p_type[1]==b %}selected{% endif %}>{{ b }}型</option>
+                    {% endfor %}
+                </select>
+
+                <label>相手のMBTI</label>
+                <select name="p_mbti" required>
+                    {% for m in ['INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP','ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP'] %}
+                    <option value="{{ m }}" {% if p_type and p_type[2]==m %}selected{% endif %}>{{ m }}</option>
+                    {% endfor %}
+                </select>
+
+                <label>相手の恋愛タイプ</label>
+                <select name="p_love" required>
+                    {% for l in ['ボス猫','隠れベイビー','主役体質','ツンデレヤンキー','憧れの先輩','カリスマバランサー','パーフェクトカメレオン','キャプテンライオン','ロマンスマジシャン','ちゃっかりうさぎ','恋愛モンスター','忠犬ハチ公','不思議生命体','敏腕マネージャー','デビル天使','最後の恋人'] %}
+                    <option value="{{ l }}" {% if p_type and p_type[3]==l %}selected{% endif %}>{{ l }}</option>
+                    {% endfor %}
+                </select>
                 <button type="submit" name="action" value="search_rank">この相手の順位を見る</button>
             </form>
+
             {% if search_result %}
+            <div style="margin-top: 20px; padding: 20px; background: #E8F4F8; border-radius: 20px; text-align: center;">
+                <h3 style="color: #2980B9; margin-bottom: 10px;">診断結果</h3>
+                <p style="font-size: 1.1em; margin: 5px 0;">この相手は <strong>{{ search_result.total_count }}通り中</strong></p>
+                <p style="font-size: 2.2em; color: #E74C3C; font-weight: bold; margin: 10px 0;">第 {{ search_result.rank }} 位</p>
+                <p style="font-size: 1.2em; margin: 5px 0;">相性度: <span style="color: #27AE60; font-weight: bold;">{{ search_result.percent }}%</span></p>
+                <p class="stars" style="font-size: 1.2rem; margin-top: 10px;">
+                    {% if search_result.stars == 5.0 %}★★★★★{% elif search_result.stars == 4.5 %}★★★★☆{% elif search_result.stars == 4.0 %}★★★★{% elif search_result.stars == 3.5 %}★★★☆{% elif search_result.stars == 3.0 %}★★★{% elif search_result.stars == 2.5 %}★★☆{% elif search_result.stars == 2.0 %}★★{% elif search_result.stars == 1.5 %}★☆{% elif search_result.stars == 1.0 %}★{% else %}ー{% endif %}
+                </p>
+            </div>
             {% endif %}
         </div>
         {% endif %}
